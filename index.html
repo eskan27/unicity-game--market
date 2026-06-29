@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unicity Labs - Pixel Rush</title>
+    <style>
+        body { margin: 0; background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
+        canvas { background: #000; border: 4px solid #FF6F00; image-rendering: pixelated; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 400; canvas.height = 600;
+
+        let basket = { x: 150, y: 550, w: 80, h: 20 };
+        let items = [];
+        const letters = ['U', 'N', 'I', 'T', 'C', 'Y'];
+
+        function spawnItem() {
+            let letter = letters[Math.floor(Math.random() * letters.length)];
+            items.push({ x: Math.random() * 380, y: 0, char: letter, color: letter === 'U' ? '#FF6F00' : '#FFFFFF' });
+        }
+
+        setInterval(spawnItem, 800);
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#FF6F00";
+            ctx.fillRect(basket.x, basket.y, basket.w, basket.h);
+            ctx.font = "30px Arial";
+            items.forEach((item, index) => {
+                item.y += 3;
+                ctx.fillStyle = item.color;
+                ctx.fillText(item.char, item.x, item.y);
+                if (item.y > basket.y && item.x > basket.x && item.x < basket.x + basket.w) items.splice(index, 1);
+            });
+            requestAnimationFrame(update);
+        }
+        window.addEventListener("mousemove", (e) => basket.x = e.clientX - canvas.offsetLeft - 40);
+        update();
+    </script>
+</body>
+</html>
